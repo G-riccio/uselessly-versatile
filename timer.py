@@ -34,31 +34,31 @@ def read_clock(clock:str|list,Formatted:bool=False) -> int:
 
 ##### Possible events #####
 # Simple time events
-eDecrease_1, eDecrease_5, eDecrease_min = lambda timer,spentTime:timer-1, lambda timer,spentTime:timer-5, lambda timer,spentTime:timer - 60
-eIncrease_1, eIncrease_5, eIncrease_min = lambda timer,spentTime:timer+1, lambda timer,spentTime:timer+5, lambda timer,spentTime:timer + 60
-eDiv_2, eDiv_5, eDiv_X = lambda timer,spentTime:timer//2, lambda timer,spentTime:timer//5, lambda timer,spentTime:timer//1.5
-eMult_2, eMult_5, eMult_X = lambda timer,spentTime:timer*2, lambda timer,spentTime:timer*5, lambda timer,spentTime:ceil(timer*1.5)
+eDecrease_1, eDecrease_5, eDecrease_min = lambda timer,fakeTimeLeft:timer-1, lambda timer,fakeTimeLeft:timer-5, lambda timer,fakeTimeLeft:timer - 60
+eIncrease_1, eIncrease_5, eIncrease_min = lambda timer,fakeTimeLeft:timer+1, lambda timer,fakeTimeLeft:timer+5, lambda timer,fakeTimeLeft:timer + 60
+eDiv_2, eDiv_5, eDiv_X = lambda timer,fakeTimeLeft:timer//2, lambda timer,fakeTimeLeft:timer//5, lambda timer,fakeTimeLeft:timer//1.5
+eMult_2, eMult_5, eMult_X = lambda timer,fakeTimeLeft:timer*2, lambda timer,fakeTimeLeft:timer*5, lambda timer,fakeTimeLeft:ceil(timer*1.5)
 
 # Advanced time events
-def eDampen_2(timer:int,spentTime:int):
-    if timer > spentTime:
+def eDampen_2(timer:int,fakeTimeLeft:int):
+    if timer > fakeTimeLeft:
         timer /= 2
-    elif timer < spentTime:
+    elif timer < fakeTimeLeft:
         timer *= 2
-    return eDecrease_1(timer,spentTime)
-def eDampen_5(timer:int,spentTime:int):
-    if timer > spentTime:
+    return eDecrease_1(timer,fakeTimeLeft)
+def eDampen_5(timer:int,fakeTimeLeft:int):
+    if timer > fakeTimeLeft:
         timer /= 5
-    elif timer < spentTime:
+    elif timer < fakeTimeLeft:
         timer *= 5
-    return eDecrease_1(timer,spentTime)
-def eDampen_X(timer:int,spentTime:int):
-    if timer > spentTime:
+    return eDecrease_1(timer,fakeTimeLeft)
+def eDampen_X(timer:int,fakeTimeLeft:int):
+    if timer > fakeTimeLeft:
         timer //= 1.5
-    elif timer < spentTime:
+    elif timer < fakeTimeLeft:
         timer = ceil(timer*1.5)
-    return eDecrease_1(timer,spentTime)
-def eShuffleDigits(timer:int,spentTime:int) -> int:
+    return eDecrease_1(timer,fakeTimeLeft)
+def eShuffleDigits(timer:int,fakeTimeLeft:int) -> int:
     listChr = lambda x:list(f'{x:02d}')
     T = list(map(listChr,read_timer(timer,False)))[:-1]
     if T[3] == ['0','0']: # Ajusting for days not being displayed
@@ -79,51 +79,51 @@ def eShuffleDigits(timer:int,spentTime:int) -> int:
             return read_clock(list(map(int,[shufT[0:2], shufT[2:4], shufT[4:6], '0', copysign(1,timer)])))
     else:
         return read_clock(list(map(int,[shufT[0:2], shufT[2:4], '0', '0', copysign(1,timer)])))
-def eFreeze(timer:int,spentTime:int) -> int: # Freezing the code for 5 seconds
+def eFreeze(timer:int,fakeTimeLeft:int) -> int: # Freezing the code for 5 seconds
     global second_length
     sleep(4*second_length) # The regular second delay will be added to make 5
-    return eDecrease_1(timer,spentTime)
+    return eDecrease_1(timer,fakeTimeLeft)
 
 # Lasting time event
-def eFast_Second(timer:int,spentTime:int) -> int:
+def eFast_Second(timer:int,fakeTimeLeft:int) -> int:
     global second_length
     second_length /= 2
-    return eDecrease_1(timer,spentTime)
-def eVeryFast_Second(timer:int,spentTime:int) -> int:
+    return eDecrease_1(timer,fakeTimeLeft)
+def eVeryFast_Second(timer:int,fakeTimeLeft:int) -> int:
     global second_length
     second_length /= 3
-    return eDecrease_1(timer,spentTime)
-def eSlow_Second(timer:int,spentTime:int) -> int:
+    return eDecrease_1(timer,fakeTimeLeft)
+def eSlow_Second(timer:int,fakeTimeLeft:int) -> int:
     global second_length
     second_length *= 2
-    return eDecrease_1(timer,spentTime)
-def eVerySlow_Second(timer:int,spentTime:int) -> int:
+    return eDecrease_1(timer,fakeTimeLeft)
+def eVerySlow_Second(timer:int,fakeTimeLeft:int) -> int:
     global second_length
     second_length *= 3
-    return eDecrease_1(timer,spentTime)
-def eDampen_Second(timer:int,spentTime:int) -> int:
+    return eDecrease_1(timer,fakeTimeLeft)
+def eDampen_Second(timer:int,fakeTimeLeft:int) -> int:
     global second_length
     if second_length > 1.0:
         second_length /= 2
     elif second_length < 1.0:
         second_length *= 2
-    return eDecrease_1(timer,spentTime)
-def eVeryDampen_Second(timer:int,spentTime:int) -> int:
+    return eDecrease_1(timer,fakeTimeLeft)
+def eVeryDampen_Second(timer:int,fakeTimeLeft:int) -> int:
     global second_length
     if second_length > 1.0:
         second_length /= 3
     elif second_length < 1.0:
         second_length *= 3
-    return eDecrease_1(timer,spentTime)
-def eReset_Second(timer:int,spentTime:int) -> int:
+    return eDecrease_1(timer,fakeTimeLeft)
+def eReset_Second(timer:int,fakeTimeLeft:int) -> int:
     global second_length
     second_length = 1.0
-    return eDecrease_1(timer,spentTime)
+    return eDecrease_1(timer,fakeTimeLeft)
 
 
 ##### Clock-running #####
 # Updating the clock
-def step(timer:int,spentTime:int,DoShow:bool=True) -> int:
+def step(timer:int,fakeTimeLeft:int,DoShow:bool=True) -> int:
     global Events,Weight,second_length
     value = randint(1,sum(Weight)) # Select a random event
     running_total = 0
@@ -133,7 +133,7 @@ def step(timer:int,spentTime:int,DoShow:bool=True) -> int:
             selectedEvent = Events[i]
             break
 
-    timer = selectedEvent(timer,spentTime) # Event
+    timer = selectedEvent(timer,fakeTimeLeft) # Event
     os.system('cls') # Timer display
     if DoShow:
         print(f'Second length: {second_length:.3f}s')
@@ -165,7 +165,7 @@ def launch(timerValue:int,mode:int=1) -> None: # Do a timer
     set_up(mode)
     start = monotonic()
     while timer > .0:
-        timer = step(timer,int(timerValue+start-monotonic())) # Keeping track of the time supposed to be left 'spentTime'
+        timer = step(timer,int(timerValue+start-monotonic())) # Keeping track of the time supposed to be left 'fakeTimeLeft'
     os.system('cls') # Final rimer display
     print(f'Second length: {second_length}s')
     print(read_timer(timer))
