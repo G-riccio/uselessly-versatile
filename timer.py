@@ -27,7 +27,7 @@ def read_timer(timer:int,Formatted:bool=True) -> str|list:
 
 def read_clock(clock:str|list,Formatted:bool=False) -> int:
     if Formatted:
-        pass # Not used
+        pass # Not used yet
     else:
         return (clock[0] + 60*clock[1] + 3600*clock[2] + 86400*clock[3])*clock[4]
 
@@ -36,8 +36,8 @@ def read_clock(clock:str|list,Formatted:bool=False) -> int:
 # Simple time events
 eDecrease_1, eDecrease_5, eDecrease_min = lambda timer,fakeTimeLeft:timer-1, lambda timer,fakeTimeLeft:timer-5, lambda timer,fakeTimeLeft:timer - 60
 eIncrease_1, eIncrease_5, eIncrease_min = lambda timer,fakeTimeLeft:timer+1, lambda timer,fakeTimeLeft:timer+5, lambda timer,fakeTimeLeft:timer + 60
-eDiv_2, eDiv_5, eDiv_X = lambda timer,fakeTimeLeft:timer//2, lambda timer,fakeTimeLeft:timer//5, lambda timer,fakeTimeLeft:timer//1.5
-eMult_2, eMult_5, eMult_X = lambda timer,fakeTimeLeft:timer*2, lambda timer,fakeTimeLeft:timer*5, lambda timer,fakeTimeLeft:ceil(timer*1.5)
+eDiv_X, eDiv_2, eDiv_5 = lambda timer,fakeTimeLeft:timer//1.5, lambda timer,fakeTimeLeft:timer//2, lambda timer,fakeTimeLeft:timer//5
+eMult_X, eMult_2, eMult_5 = lambda timer,fakeTimeLeft:ceil(timer*1.5), lambda timer,fakeTimeLeft:timer*2, lambda timer,fakeTimeLeft:timer*5
 
 # Advanced time events
 def eDampen_2(timer:int,fakeTimeLeft:int):
@@ -141,7 +141,7 @@ def step(timer:int,fakeTimeLeft:int,DoShow:bool=True) -> int:
     sleep(second_length)
     return timer
 
-# Set-up, 
+# Set-up, different modes
 Events = []
 Weight = []
 
@@ -150,7 +150,7 @@ def set_up(mode:int = 1) -> None: # New modes to be added
     
     if mode == 1: # Basic mode
         Events=[eDecrease_1,eDecrease_5,eDecrease_min,eIncrease_1,eIncrease_5,eIncrease_min,eDiv_X,eDiv_2,eDiv_5,eMult_X,eMult_2,eMult_5,
-                eDampen_2,eDampen_5,eDampen_X,eShuffleDigits,eFreeze,
+                eDampen_X,eDampen_2,eDampen_5,eShuffleDigits,eFreeze,
                 eFast_Second,eVeryFast_Second,eSlow_Second,eVerySlow_Second,eDampen_Second,eVeryDampen_Second,eReset_Second]
         Weight=[100        ,4          ,2            ,8          ,4          ,2            ,6     ,4     ,1     ,4      ,2      ,1      ,
                 5        ,3        ,1        ,2             ,4      ,
@@ -166,7 +166,7 @@ def launch(timerValue:int,mode:int=1) -> None: # Do a timer
     start = monotonic()
     while timer > .0:
         timer = step(timer,int(timerValue+start-monotonic())) # Keeping track of the time supposed to be left 'fakeTimeLeft'
-    os.system('cls') # Final rimer display
+    os.system('cls') # Final timer display
     print(f'Second length: {second_length}s')
     print(read_timer(timer))
     print(f'{read_timer(timerValue)} completed in {read_timer(monotonic()-start)}')
